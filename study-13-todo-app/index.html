@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <title>Todo App</title>
+    <style>
+      :root {
+        --card-radius: 12px;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          Arial;
+        background: linear-gradient(
+          135deg,
+          #f6f9ff 0%,
+          #eaf6f1 45%,
+          #fff0f6 100%
+        );
+        background-attachment: fixed;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .card {
+        background: rgba(255, 255, 255, 0.85);
+        border: none;
+        border-radius: var(--card-radius);
+        box-shadow: 0 6px 18px rgba(30, 40, 50, 0.08);
+        overflow: hidden;
+      }
+      h1 {
+        letter-spacing: 0.2px;
+      }
+      .list-group-item.completed {
+        background-color: #d4edda !important;
+      }
+      .task-text {
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .tick {
+        color: #155724;
+        font-weight: 700;
+        margin-right: 0.5rem;
+      }
+      .delete-btn {
+        background: transparent;
+        border: none;
+        color: #a00;
+        font-size: 1.05rem;
+        padding: 0 0.25rem;
+      }
+      #notification-container div {
+        opacity: 0.95;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <h1 class="text-center mb-4">Yapılacaklar Listesi</h1>
+      <div class="row justify-content-center">
+        <div class="col-md-6">
+          <div class="card shadow">
+            <div class="card-body">
+              <form id="todoForm" class="d-flex mb-3">
+                <input
+                  type="text"
+                  id="todoInput"
+                  class="form-control me-2"
+                  placeholder="Yeni bir görev ekleyin"
+                  required
+                />
+                <button type="submit" class="btn btn-primary">Ekle</button>
+              </form>
+              <ul id="todoList" class="list-group"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
