@@ -1,4 +1,5 @@
-const tasks = [];
+const STORAGE_KEY = "todo-app-tasks";
+const tasks = loadTasks();
 const todoForm = document.querySelector("#todoForm");
 const todoInput = document.querySelector("#todoInput");
 const todoList = document.querySelector("#todoList");
@@ -43,13 +44,34 @@ function showNotification(message, type = "info", duration = 3000) {
     setTimeout(() => notif.remove(), 300);
   }, duration);
 }
+
+function loadTasks() {
+  try {
+    const storedTasks = localStorage.getItem(STORAGE_KEY);
+    return storedTasks ? JSON.parse(storedTasks) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveTasks() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+}
+
 function createTodoElement(task) {
   const li = document.createElement("li");
   li.classList.add("list-group-item");
+  if (task.completed) {
+    li.classList.add("completed");
+    li.style.backgroundColor = "#d4edda";
+  }
 
   const span = document.createElement("span");
   span.classList.add("task-text");
-  span.textContent = task;
+  span.textContent = task.text;
+  if (task.completed) {
+    span.style.textDecoration = "line-through";
+  }
 
   const tick = document.createElement("span");
   tick.classList.add("tick");
@@ -61,7 +83,13 @@ function createTodoElement(task) {
 
   const deleteButton = document.createElement("button");
   deleteButton.type = "button";
-  deleteButton.classList.add("btn", "btn-danger", "btn-sm", "float-end", "delete-btn");
+  deleteButton.classList.add(
+    "btn",
+    "btn-danger",
+    "btn-sm",
+    "float-end",
+    "delete-btn",
+  );
   deleteButton.setAttribute("aria-label", "Sil");
   deleteButton.textContent = "×";
 
@@ -79,7 +107,7 @@ function addTodo(event) {
     showNotification("Lütfen bir görev girin!", "error");
     return;
   }
-  if (tasks.includes(todoText)) {
+  if (tasks.some((task) => task.text === todoText)) {
     showNotification("Bu görev zaten eklenmiş!", "error");
     return;
   }
@@ -88,8 +116,9 @@ function addTodo(event) {
     return;
   }
 
-  tasks.push(todoText);
-  const li = createTodoElement(todoText);
+  tasks.push({ text: todoText, completed: false });
+  saveTasks();
+  const li = createTodoElement({ text: todoText, completed: false });
   todoList.appendChild(li);
   todoInput.value = "";
   showNotification("Görev eklendi.", "success");
@@ -102,15 +131,25 @@ todoList.addEventListener("click", (event) => {
     const li = deleteBtn.closest("li");
     if (!li) return;
     const text = li.querySelector(".task-text").textContent;
-    const index = tasks.indexOf(text);
-    if (index > -1) tasks.splice(index, 1);
-    li.remove();
+    const index = tasks.findIndex((task) => task.text === text);
+    if (index > -1) {
+      tasks.splice(index, 1);
+      saveTasks();
+    }
+    renderPage();
     showNotification("Görev silindi.", "success");
     return;
   }
 
   const li = event.target.closest("li");
   if (li && todoList.contains(li)) {
+    const text = li.querySelector(".task-text").textContent;
+    const task = tasks.find((item) => item.text === text);
+    if (!task) return;
+
+    task.completed = !task.completed;
+    saveTasks();
+
     const wasCompleted = li.classList.contains("completed");
     const textSpan = li.querySelector(".task-text");
     const tick = li.querySelector(".tick");
